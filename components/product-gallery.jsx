@@ -36,7 +36,7 @@ export function ProductGallery({ images, productName }) {
   return (
     <div className="space-y-4">
       {/* Main Image */}
-      <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-muted">
+      <div className="relative aspect-[4/4] overflow-hidden rounded-lg bg-muted">
         <img
           src={images[mainImage] || "/placeholder.svg?height=600&width=480"}
           alt={`${productName} - Imagem principal`}

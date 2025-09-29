@@ -9,49 +9,23 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-background to-muted py-20 lg:py-32">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-balance mb-6">
-              <span className="font-serif">Moda que</span>
-              <br />
-              <span className="text-accent">inspira você</span>
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground text-pretty mb-8 max-w-2xl mx-auto">
-              Descubra peças únicas que combinam elegância, conforto e estilo. Transforme seu guarda-roupa com nossa
-              coleção cuidadosamente selecionada.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="text-lg px-8 py-6">
-                <Link href="/produtos">Explorar Coleção</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6 bg-transparent">
-                <Link href="/sobre">Nossa História</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
+     
       {/* Featured Products */}
       <section className="py-16 lg:py-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Produtos em <span className="text-accent">Destaque</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Conheça algumas das nossas peças mais amadas pelas clientes
-            </p>
+              Novidades
+            </h2>            
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 ">
             {featuredProducts.map((product) => (
               <Card
                 key={product.id}
                 className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                <div className="relative aspect-[3/4] overflow-hidden">
+                <div className="relative aspect-[3/2] overflow-hidden">
                   <img
                     src={product.images[0] || "/placeholder.svg"}
                     alt={product.name}
@@ -61,7 +35,7 @@ export default function HomePage() {
                 </div>
                 <CardContent className="p-4">
                   <h3 className="font-semibold text-lg mb-2 text-balance">{product.name}</h3>
-                  <p className="text-2xl font-bold text-accent mb-3">R$ {product.price.toFixed(2).replace(".", ",")}</p>
+                  <p className="text-[18px] text-black mb-3">R$ {product.price.toFixed(2).replace(".", ",")}</p>
                   <Button asChild className="w-full">
                     <Link href={`/produto/${product.id}`}>Ver Detalhes</Link>
                   </Button>

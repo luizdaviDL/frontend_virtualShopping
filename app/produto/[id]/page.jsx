@@ -147,8 +147,8 @@ export default function ProductPage() {
               <Badge variant="secondary" className="mb-2">
                 {product.category}
               </Badge>
-              <h1 className="text-3xl md:text-4xl font-bold text-balance mb-4">{product.name}</h1>
-              <p className="text-4xl font-bold text-accent mb-6">R$ {product.price.toFixed(2).replace(".", ",")}</p>
+              <h1 className="text-[23px] md:text-4xl  text-balance mb-4">{product.name}</h1>
+              <p className="text-4xl  text-black mb-6">R$ {product.price.toFixed(2).replace(".", ",")}</p>
             </div>
 
             {/* Product Options */}
