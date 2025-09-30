@@ -80,7 +80,7 @@ export default function CartPage() {
           </Button>
           <div>
             <h1 className="text-3xl md:text-4xl font-bold">
-              Seu <span className="text-accent">Carrinho</span>
+              Seu Carrinho
             </h1>
             <p className="text-muted-foreground">
               {cartItemsCount} item{cartItemsCount !== 1 ? "s" : ""} no seu carrinho
@@ -157,7 +157,7 @@ export default function CartPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-3">
-                  <svg className="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -172,7 +172,7 @@ export default function CartPage() {
 
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-3">
-                  <svg className="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -187,7 +187,7 @@ export default function CartPage() {
 
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-3">
-                  <svg className="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"

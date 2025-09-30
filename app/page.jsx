@@ -11,7 +11,7 @@ export default function HomePage() {
       {/* Hero Section */}
      
       {/* Featured Products */}
-      <section className="py-16 lg:py-24">
+      <section className="py-16 lg:py-4">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -52,7 +52,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* Features 
       <section className="py-16 lg:py-24 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
@@ -103,7 +103,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   )
 }

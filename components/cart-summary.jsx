@@ -57,7 +57,7 @@ export function CartSummary({ subtotal, shipping, total, itemsCount, onCheckout,
         {/* Total */}
         <div className="flex justify-between text-lg font-bold">
           <span>Total</span>
-          <span className="text-accent">{formatPrice(total)}</span>
+          <span className="text-black">{formatPrice(total)}</span>
         </div>
 
         {/* Security Badge */}

@@ -24,17 +24,19 @@ export function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/" className="text-foreground hover:text-accent transition-colors">
-              Início
+              Tendencias
             </Link>
             <Link href="/produtos" className="text-foreground hover:text-accent transition-colors">
               Produtos
             </Link>
-            <Link href="/sobre" className="text-foreground hover:text-accent transition-colors">
+           {/**
+            *  <Link href="/sobre" className="text-foreground hover:text-accent transition-colors">
               Sobre
             </Link>
             <Link href="/contato" className="text-foreground hover:text-accent transition-colors">
               Contato
             </Link>
+            */}
           </nav>
 
           {/* Actions */}

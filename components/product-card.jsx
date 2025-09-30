@@ -44,7 +44,7 @@ export function ProductCard({ product, onAddToCart }) {
     <Card className="group overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 bg-card">
       <Link href={`/produto/${product.id}`}>
         <div
-          className="relative aspect-[3/4] overflow-hidden"
+          className="relative aspect-[3/3] overflow-hidden"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -96,7 +96,7 @@ export function ProductCard({ product, onAddToCart }) {
         </Link>
 
         <div className="flex items-center justify-between">
-          <p className="text-2xl font-bold text-accent">R$ {product.price.toFixed(2).replace(".", ",")}</p>
+          <p className="text-[18px] text-black">R$ {product.price.toFixed(2).replace(".", ",")}</p>
 
           {/* Size indicators */}
           {product.sizes && product.sizes.length > 0 && (

@@ -70,7 +70,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove }) {
                   )}
                 </div>
 
-                <p className="text-lg font-bold text-accent mt-2">R$ {item.price.toFixed(2).replace(".", ",")}</p>
+                <p className="text-[18px] text-black mt-2">R$ {item.price.toFixed(2).replace(".", ",")}</p>
               </div>
 
               {/* Actions - Desktop */}
@@ -116,7 +116,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove }) {
 
               {/* Subtotal and Mobile Remove */}
               <div className="flex items-center gap-3">
-                <p className="font-bold text-accent">R$ {subtotal.toFixed(2).replace(".", ",")}</p>
+                <p className="font-bold text-black">R$ {subtotal.toFixed(2).replace(".", ",")}</p>
 
                 {/* Remove Button - Mobile */}
                 <Button

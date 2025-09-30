@@ -31,7 +31,7 @@ export function ProductOptions({ colors, sizes, onSelectionChange, selectedOptio
       {colors && colors.length > 0 && (
         <div>
           <h3 className="text-sm font-medium mb-3">
-            Cor: {selectedColor && <span className="text-accent">{selectedColor}</span>}
+            Cor: {selectedColor && <span style={{ color: 'rgba(61, 60, 60, 0.87)' }}>{selectedColor}</span>}
           </h3>
           <div className="flex flex-wrap gap-3">
             {colors.map((color) => (
@@ -58,9 +58,10 @@ export function ProductOptions({ colors, sizes, onSelectionChange, selectedOptio
       {/* Size Selection */}
       {sizes && sizes.length > 0 && (
         <div>
-          <h3 className="text-sm font-medium mb-3">
-            Tamanho: {selectedSize && <span className="text-accent">{selectedSize}</span>}
-          </h3>
+         <h3 className="text-sm font-medium mb-3">
+          Tamanho: {selectedSize && <span style={{ color: 'rgba(61, 60, 60, 0.87)' }}>{selectedSize}</span>}
+        </h3>
+
 
           {/* For clothing sizes (P, M, G, GG) - use buttons */}
           {sizes.every((size) => ["P", "M", "G", "GG", "PP", "XG"].includes(size)) ? (
