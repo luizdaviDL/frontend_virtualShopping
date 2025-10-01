@@ -284,7 +284,7 @@ export function CheckoutForm({ onSubmit, isLoading }) {
             <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/30 transition-colors">
               <RadioGroupItem value="pix" id="pix" />
               <Label htmlFor="pix" className="flex items-center gap-3 cursor-pointer flex-1">
-                <Smartphone className="h-5 w-5 text-accent" />
+                <Smartphone className="h-5 w-5 text-sm" />
                 <div>
                   <p className="font-medium">PIX</p>
                   <p className="text-sm text-muted-foreground">Aprovação instantânea</p>
@@ -295,7 +295,7 @@ export function CheckoutForm({ onSubmit, isLoading }) {
             <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/30 transition-colors">
               <RadioGroupItem value="credit" id="credit" />
               <Label htmlFor="credit" className="flex items-center gap-3 cursor-pointer flex-1">
-                <CreditCard className="h-5 w-5 text-accent" />
+                <CreditCard className="h-5 w-5 text-sm" />
                 <div>
                   <p className="font-medium">Cartão de Crédito</p>
                   <p className="text-sm text-muted-foreground">Parcelamento disponível</p>
@@ -306,7 +306,7 @@ export function CheckoutForm({ onSubmit, isLoading }) {
             <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/30 transition-colors">
               <RadioGroupItem value="boleto" id="boleto" />
               <Label htmlFor="boleto" className="flex items-center gap-3 cursor-pointer flex-1">
-                <FileText className="h-5 w-5 text-accent" />
+                <FileText className="h-5 w-5 text-sm" />
                 <div>
                   <p className="font-medium">Boleto Bancário</p>
                   <p className="text-sm text-muted-foreground">Vencimento em 3 dias úteis</p>

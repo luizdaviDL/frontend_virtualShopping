@@ -48,7 +48,7 @@ export default function OrdersPage() {
           </Button>
           <div>
             <h1 className="text-3xl md:text-4xl font-bold">
-              Meus <span className="text-accent">Pedidos</span>
+              Meus Pedidos
             </h1>
             <p className="text-muted-foreground">Acompanhe o status dos seus pedidos</p>
           </div>

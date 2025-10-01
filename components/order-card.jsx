@@ -198,7 +198,7 @@ export function OrderCard({ order, onStatusUpdate }) {
                   <Separator />
                   <div className="flex justify-between font-semibold">
                     <span>Total</span>
-                    <span className="text-accent">{formatPrice(order.payment.total)}</span>
+                    <span className="text-black">{formatPrice(order.payment.total)}</span>
                   </div>
                   <div className="pt-2 border-t">
                     <p className="text-muted-foreground">
