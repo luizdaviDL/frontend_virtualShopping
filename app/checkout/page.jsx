@@ -109,7 +109,7 @@ export default function CheckoutPage() {
           </Button>
           <div>
             <h1 className="text-3xl md:text-4xl font-bold">
-              Finalizar <span className="text-accent">Compra</span>
+              Finalizar Compra
             </h1>
             <p className="text-muted-foreground">
               {cartItemsCount} item{cartItemsCount !== 1 ? "s" : ""} • Total: R$ {total.toFixed(2).replace(".", ",")}

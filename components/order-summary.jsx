@@ -73,7 +73,7 @@ export function OrderSummary({ items, subtotal, shipping, total }) {
         {/* Total */}
         <div className="flex justify-between text-lg font-bold">
           <span>Total</span>
-          <span className="text-accent">{formatPrice(total)}</span>
+          <span className="text-muted-foreground">{formatPrice(total)}</span>
         </div>
 
         {/* Security Info */}
