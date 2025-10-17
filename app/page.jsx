@@ -1,9 +1,12 @@
+"use client"; 
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { products } from "@/data/products"
+import { useProducts } from "@/data/products"
 
 export default function HomePage() {
+  const products = useProducts(); 
   const featuredProducts = products.slice(0, 4)
 
   return (
@@ -27,7 +30,7 @@ export default function HomePage() {
               >
                 <div className="relative aspect-[3/2] overflow-hidden">
                   <img
-                    src={product.images[0] || "/placeholder.svg"}
+                    src={product.urlsImage[0] || "/placeholder.svg"}
                     alt={product.name}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />

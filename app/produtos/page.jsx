@@ -3,11 +3,12 @@
 import { useState, useMemo } from "react"
 import { ProductCard } from "@/components/product-card"
 import { ProductFilters } from "@/components/product-filters"
-import { products } from "@/data/products"
+import { useProducts } from "@/data/products"
 import { useStore } from "@/contexts/store-context"
 import { useToast } from "@/hooks/use-toast"
 
 export default function ProductsPage() {
+  const products = useProducts(); 
   const { addToCart } = useStore()
   const { toast } = useToast()
 

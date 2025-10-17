@@ -1,4 +1,4 @@
-export const products = [
+/*export const products = [
   {
     id: 1,
     name: "Vestido Floral Elegante",
@@ -117,7 +117,26 @@ export const products = [
     description: "Tênis casual super confortável para o dia a dia. Solado anatômico e design moderno.",
     category: "calcados",
   },
-]
+]*/
+
+// Adicionando a diretiva "use client" para que o React saiba que este é um componente do cliente
+"use client";
+
+import React, { useEffect, useState } from 'react';
+
+export const useProducts = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:8081/product/products')
+      .then(resp => resp.json())
+      .then(data => setProducts(data));
+  }, []);
+
+  return products;
+};
+
+
 
 export const categories = [
   { id: "todos", name: "Todos os Produtos" },

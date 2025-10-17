@@ -8,12 +8,13 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ProductGallery } from "@/components/product-gallery"
 import { ProductOptions } from "@/components/product-options"
-import { products } from "@/data/products"
+import { useProducts } from "@/data/products"
 import { useStore } from "@/contexts/store-context"
 import { useToast } from "@/hooks/use-toast"
 import { ArrowLeft, ShoppingBag, Heart, Share2, Truck, Shield, RotateCcw } from "lucide-react"
 
 export default function ProductPage() {
+  const products = useProducts(); 
   const params = useParams()
   const router = useRouter()
   const { addToCart } = useStore()
@@ -24,21 +25,23 @@ export default function ProductPage() {
   const [quantity, setQuantity] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
 
-  useEffect(() => {
-    const productId = Number.parseInt(params.id)
-    const foundProduct = products.find((p) => p.id === productId)
+useEffect(() => {
+  if (!products || products.length === 0) return // aguarda carregar
 
-    if (foundProduct) {
-      setProduct(foundProduct)
-      // Set default selections
-      setSelectedOptions({
-        color: foundProduct.colors?.[0]?.name || "",
-        size: foundProduct.sizes?.[0] || "",
-      })
-    } else {
-      router.push("/produtos")
-    }
-  }, [params.id, router])
+  const productId = Number.parseInt(params.id)
+  const foundProduct = products.find((p) => p.id === productId)
+
+  if (foundProduct) {
+    setProduct(foundProduct)
+    setSelectedOptions({
+      color: foundProduct.colors?.[0]?.name || "",
+      size: foundProduct.sizes?.[0] || "",
+    })
+  } else {
+    router.push("/produtos")
+  }
+}, [products, params.id, router])
+
 
   const handleAddToCart = async () => {
     if (!product) return
@@ -72,7 +75,7 @@ export default function ProductPage() {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images[0],
+        image: product.urlsImage[0],
         color: selectedOptions.color || "Padrão",
         size: selectedOptions.size || "Único",
         quantity: quantity,
@@ -138,14 +141,14 @@ export default function ProductPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Product Gallery */}
           <div>
-            <ProductGallery images={product.images} productName={product.name} />
+            <ProductGallery images={product.urlsImage} productName={product.name} />
           </div>
 
           {/* Product Info */}
           <div className="space-y-6">
             <div>
               <Badge variant="secondary" className="mb-2">
-                {product.category}
+                {product.category.name}
               </Badge>
               <h1 className="text-[23px] md:text-4xl  text-balance mb-4">{product.name}</h1>
               <p className="text-4xl  text-black mb-6">R$ {product.price.toFixed(2).replace(".", ",")}</p>
@@ -153,8 +156,8 @@ export default function ProductPage() {
 
             {/* Product Options */}
             <ProductOptions
-              colors={product.colors}
-              sizes={product.sizes}
+              colors={product.colores}
+              sizes={product.size}
               selectedOptions={selectedOptions}
               onSelectionChange={setSelectedOptions}
             />
