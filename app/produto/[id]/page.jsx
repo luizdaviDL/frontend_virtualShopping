@@ -75,7 +75,7 @@ useEffect(() => {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.urlsImage[0],
+        image: product.images[0],
         color: selectedOptions.color || "Padrão",
         size: selectedOptions.size || "Único",
         quantity: quantity,
@@ -141,7 +141,7 @@ useEffect(() => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Product Gallery */}
           <div>
-            <ProductGallery images={product.urlsImage} productName={product.name} />
+            <ProductGallery images={product.images} productName={product.name} />
           </div>
 
           {/* Product Info */}
@@ -156,7 +156,7 @@ useEffect(() => {
 
             {/* Product Options */}
             <ProductOptions
-              colors={product.colores}
+              colors={product.colors}
               sizes={product.size}
               selectedOptions={selectedOptions}
               onSelectionChange={setSelectedOptions}

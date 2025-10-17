@@ -30,7 +30,7 @@ export default function HomePage() {
               >
                 <div className="relative aspect-[3/2] overflow-hidden">
                   <img
-                    src={product.urlsImage[0] || "/placeholder.svg"}
+                    src={product.images[0] || "/placeholder.svg"}
                     alt={product.name}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
