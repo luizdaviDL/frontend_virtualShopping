@@ -24,17 +24,23 @@ export function ProductOptions({ colors, sizes, onSelectionChange, selectedOptio
       size,
     })
   }
+  
+    // Remove duplicadas
+  const uniqueColors = colors?.filter(
+    (color, index, self) =>
+      index === self.findIndex((c) => c.name === color.name && c.value === color.value)
+  )
 
   return (
     <div className="space-y-6">
       {/* Color Selection */}
-      {colors && colors.length > 0 && (
+     {uniqueColors && uniqueColors.length > 0 && (
         <div>
           <h3 className="text-sm font-medium mb-3">
             Cor: {selectedColor && <span style={{ color: 'rgba(61, 60, 60, 0.87)' }}>{selectedColor}</span>}
           </h3>
           <div className="flex flex-wrap gap-3">
-            {colors.map((color) => (
+            {uniqueColors.map((color) => (
               <button
                 key={color.name}
                 onClick={() => handleColorChange(color.name)}

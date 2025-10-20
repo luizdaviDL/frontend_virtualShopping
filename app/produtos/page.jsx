@@ -24,42 +24,47 @@ export default function ProductsPage() {
   useEffect(() => {
     if (categories.length > 0 && filters.category === "todos") {
       // se quiser começar na primeira categoria da API:
-      setFilters((prev) => ({ ...prev, category: categories[0].name }))
+      setFilters((prev) => ({ ...prev, category: categories[0].id }))
     }
   }, [categories])
 
   const filteredAndSortedProducts = useMemo(() => {
-    let filtered = products
+    let filtered = products;
 
     // Filter by category
     if (filters.category !== "todos") {
-      filtered = filtered.filter((product) => product.category.name === filters.category)
+      filtered = filtered.filter(
+        (product) => product.category.id === filters.category
+      );
     }
 
     // Filter by price range
     filtered = filtered.filter(
-      (product) => product.price >= filters.priceRange[0] && product.price <= filters.priceRange[1],
-    )
+      (product) =>
+        product.price >= filters.priceRange[0] &&
+        product.price <= filters.priceRange[1]
+    );
 
     // Sort products
     switch (filters.sortBy) {
       case "price-asc":
-        filtered.sort((a, b) => a.price - b.price)
-        break
+        filtered.sort((a, b) => a.price - b.price);
+        break;
       case "price-desc":
-        filtered.sort((a, b) => b.price - a.price)
-        break
+        filtered.sort((a, b) => b.price - a.price);
+        break;
       case "newest":
-        filtered.sort((a, b) => b.id - a.id)
-        break
+        filtered.sort((a, b) => b.id - a.id);
+        break;
       case "name":
       default:
-        filtered.sort((a, b) => a.name.localeCompare(b.name))
-        break
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        break;
     }
 
-    return filtered
-  }, [filters])
+    return filtered;
+  }, [filters, products]); // <- ADICIONE products aqui!
+
 
   const handleAddToCart = (product) => {
     addToCart(product)

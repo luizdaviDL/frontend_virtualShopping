@@ -4,10 +4,20 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useProducts } from "@/data/products"
+import { useMemo } from "react";
 
 export default function HomePage() {
   const products = useProducts(); 
-  const featuredProducts = products.slice(0, 4)
+
+  const featuredProducts = useMemo(() => {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // Calcula a data de 7 dias atrás
+    
+    return products.filter(product => {
+      const createdAt = new Date(product.createdAt); // A data de criação do produto
+      return createdAt >= oneWeekAgo; // Só inclui os produtos cadastrados nos últimos 7 dias
+    }).slice(0, 4); // Pega os 4 primeiros produtos filtrados
+  }, [products]);
 
   return (
     <div className="min-h-screen">
