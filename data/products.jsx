@@ -136,8 +136,19 @@ export const useProducts = () => {
   return products;
 };
 
+export const useCategories = ()=>{
+   const [categories, setCategories] = useState([]);
 
+  useEffect(() => {
+    fetch('http://localhost:8081/category/getAll')
+      .then(resp => resp.json())
+      .then(data => setCategories(data));
+  }, []);
 
+  return categories;
+}
+
+/*
 export const categories = [
   { id: "todos", name: "Todos os Produtos" },
   { id: "vestidos", name: "Vestidos" },
@@ -146,4 +157,4 @@ export const categories = [
   { id: "casacos", name: "Casacos" },
   { id: "saias", name: "Saias" },
   { id: "calcados", name: "Calçados" },
-]
+]*/

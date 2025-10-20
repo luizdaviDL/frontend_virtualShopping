@@ -4,10 +4,11 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Slider } from "@/components/ui/slider"
-import { categories } from "@/data/products"
+import { useCategories } from "@/data/products"
 import { ChevronDown, ChevronUp } from "lucide-react"
 
 export function ProductFilters({ onFilterChange, filters }) {
+  const categories = useCategories();
   const [isExpanded, setIsExpanded] = useState(false)
   const [priceRange, setPriceRange] = useState(filters.priceRange || [0, 300])
 

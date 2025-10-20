@@ -1,14 +1,17 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo,useEffect  } from "react"
 import { ProductCard } from "@/components/product-card"
 import { ProductFilters } from "@/components/product-filters"
 import { useProducts } from "@/data/products"
 import { useStore } from "@/contexts/store-context"
 import { useToast } from "@/hooks/use-toast"
+import { useCategories } from "@/data/products"
 
 export default function ProductsPage() {
+  const categories = useCategories();
   const products = useProducts(); 
+
   const { addToCart } = useStore()
   const { toast } = useToast()
 
@@ -18,12 +21,19 @@ export default function ProductsPage() {
     sortBy: "name",
   })
 
+  useEffect(() => {
+    if (categories.length > 0 && filters.category === "todos") {
+      // se quiser começar na primeira categoria da API:
+      setFilters((prev) => ({ ...prev, category: categories[0].name }))
+    }
+  }, [categories])
+
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products
 
     // Filter by category
     if (filters.category !== "todos") {
-      filtered = filtered.filter((product) => product.category === filters.category)
+      filtered = filtered.filter((product) => product.category.name === filters.category)
     }
 
     // Filter by price range
