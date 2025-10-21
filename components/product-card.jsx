@@ -54,19 +54,7 @@ export function ProductCard({ product, onAddToCart }) {
             className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
           />
 
-          {/* Overlay with quick add button */}
-          <div
-            className={`absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-end justify-center pb-4 ${isHovered ? "opacity-100" : "opacity-0"}`}
-          >
-            <Button
-              onClick={handleQuickAdd}
-              size="sm"
-              className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 bg-primary/90 hover:bg-primary text-primary-foreground"
-            >
-              <ShoppingBag className="h-4 w-4 mr-2" />
-              Adicionar
-            </Button>
-          </div>
+          
 
           {/* Color indicators */}
           {product.colors && product.colors.length > 1 && (
@@ -87,6 +75,8 @@ export function ProductCard({ product, onAddToCart }) {
           )}
         </div>
       </Link>
+
+      
 
       <CardContent className="p-4">
         <Link href={`/produto/${product.id}`}>

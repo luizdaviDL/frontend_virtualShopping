@@ -8,8 +8,10 @@ import { useStore } from "@/contexts/store-context"
 import { useToast } from "@/hooks/use-toast"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useFetch } from "@/data/products"
 
 export default function CheckoutPage() {
+  const {data: clientInformation, loading, error} = useFetch('http://localhost:8081/clientAdress/getAll')
   const router = useRouter()
   const { cart, cartTotal, cartItemsCount, addOrder, clearCart } = useStore()
   const { toast } = useToast()

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { OrderCard } from "@/components/order-card"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -10,14 +10,25 @@ import { useToast } from "@/hooks/use-toast"
 import { Package, ShoppingBag, Filter, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useFetch } from "@/data/products"
+
 
 export default function OrdersPage() {
   const router = useRouter()
-  const { orders, updateOrderStatus } = useStore()
+
+  const [orders, setOrders] = useState([])
+  const {data: ordersFetch, loading, error} = useFetch('http://localhost:8081/clientAdress/getAll')
+  useEffect(() => {
+    if (ordersFetch) {
+      setOrders(ordersFetch)
+    }
+  }, [ordersFetch])
+
   const { toast } = useToast()
   const [statusFilter, setStatusFilter] = useState("all")
 
   const handleStatusUpdate = (orderId, newStatus) => {
+
     updateOrderStatus(orderId, newStatus)
     toast({
       title: "Status atualizado",

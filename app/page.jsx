@@ -3,20 +3,24 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { useProducts } from "@/data/products"
+import { useFetch } from "@/data/products"
 import { useMemo } from "react";
 
 export default function HomePage() {
-  const products = useProducts(); 
+  const {data: products, loading, error} = useFetch('http://localhost:8081/product/products')
 
   const featuredProducts = useMemo(() => {
+    if (!products || !Array.isArray(products)) return [];
+
     const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // Calcula a data de 7 dias atrás
-    
-    return products.filter(product => {
-      const createdAt = new Date(product.createdAt); // A data de criação do produto
-      return createdAt >= oneWeekAgo; // Só inclui os produtos cadastrados nos últimos 7 dias
-    }).slice(0, 4); // Pega os 4 primeiros produtos filtrados
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    return products
+      .filter((product) => {
+        const createdAt = new Date(product.createdAt);
+        return createdAt >= oneWeekAgo;
+      })
+      .slice(0, 4);
   }, [products]);
 
   return (

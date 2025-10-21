@@ -6,11 +6,11 @@ import { ProductFilters } from "@/components/product-filters"
 import { useProducts } from "@/data/products"
 import { useStore } from "@/contexts/store-context"
 import { useToast } from "@/hooks/use-toast"
-import { useCategories } from "@/data/products"
+import { useFetch } from "@/data/products"
 
 export default function ProductsPage() {
-  const categories = useCategories();
-  const products = useProducts(); 
+  const {data: categories, loadingCat, errorCat} = useFetch('http://localhost:8081/category/getAll')
+  const {data: products, loading, error} = useFetch('http://localhost:8081/product/products') 
 
   const { addToCart } = useStore()
   const { toast } = useToast()
@@ -29,8 +29,9 @@ export default function ProductsPage() {
   }, [categories])
 
   const filteredAndSortedProducts = useMemo(() => {
+    if (!products || !Array.isArray(products)) return [];
     let filtered = products;
-
+    
     // Filter by category
     if (filters.category !== "todos") {
       filtered = filtered.filter(

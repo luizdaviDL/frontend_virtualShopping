@@ -8,13 +8,14 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ProductGallery } from "@/components/product-gallery"
 import { ProductOptions } from "@/components/product-options"
-import { useProducts } from "@/data/products"
+import { useFetch } from "@/data/products"
 import { useStore } from "@/contexts/store-context"
 import { useToast } from "@/hooks/use-toast"
 import { ArrowLeft, ShoppingBag, Heart, Share2, Truck, Shield, RotateCcw } from "lucide-react"
 
 export default function ProductPage() {
-  const products = useProducts(); 
+  const {data: products, loading, error} = useFetch('http://localhost:8081/product/products')
+  
   const params = useParams()
   const router = useRouter()
   const { addToCart } = useStore()
@@ -35,7 +36,7 @@ useEffect(() => {
     setProduct(foundProduct)
     setSelectedOptions({
       color: foundProduct.colors?.[0]?.name || "",
-      size: foundProduct.sizes?.[0] || "",
+      size: foundProduct.size?.[0] || "",
     })
   } else {
     router.push("/produtos")
@@ -46,9 +47,23 @@ useEffect(() => {
   const handleAddToCart = async () => {
     if (!product) return
 
+    const user = typeof window !== "undefined" ? localStorage.getItem("user") : null;
+
+      if (!user) {
+    toast({
+      title: "Faça login ou cadastre-se",
+      description: "Você precisa estar logado para adicionar produtos ao carrinho.",
+      variant: "destructive",
+    });
+
+    // Redireciona para cadastro com retorno à página atual
+    router.push(`/conta?redirect=/produto/${product.id}`);
+    return;
+  }
+
     // Validation
     const hasColors = product.colors && product.colors.length > 0
-    const hasSizes = product.sizes && product.sizes.length > 0
+    const hasSizes = product.size && product.size.length > 0
 
     if (hasColors && !selectedOptions.color) {
       toast({
