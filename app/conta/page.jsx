@@ -5,6 +5,7 @@ import { useState } from "react"
 import Footer from "../../components/Footer"
 import { useStore } from "../../contexts/store-context"
 import { User, Package, Heart, Settings, LogOut, Eye, EyeOff } from "lucide-react"
+import { apiRequest } from "@/data/products"
 
 export default function AccountPage() {
   const { state, dispatch } = useStore()
@@ -15,13 +16,13 @@ export default function AccountPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password: "",
+    passWord: "",
     confirmPassword: "",
   })
   const [profileData, setProfileData] = useState({
     name: state.user?.name || "",
     email: state.user?.email || "",
-    phone: state.user?.phone || "",
+    passWord: state.user?.passWord || "",
     address: state.user?.address || "",
     cep: state.user?.cep || "",
     numberHome: state.user?.numberHome || "",
@@ -57,7 +58,7 @@ export default function AccountPage() {
     setProfileData({
       name: state.user?.name || "",
       email: state.user?.email || "",
-      phone: state.user?.phone || "",
+      passWord: state.user?.passWord || "",
       address: state.user?.address || "",
       cep: state.user?.cep || "",
       numberHome: state.user?.numberHome || "",
@@ -82,20 +83,30 @@ export default function AccountPage() {
     alert("Login realizado com sucesso!")
   }
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault()
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.passWord !== formData.confirmPassword) {
       alert("As senhas não coincidem")
       return
     }
-    const userData = {
-      id: 1,
+    const userData = {      
       name: formData.name,
       email: formData.email,
-      joinDate: new Date().toISOString(),
+      password: formData.passWord
     }
-    dispatch({ type: "SET_USER", payload: userData })
-    alert("Conta criada com sucesso!")
+    try {
+      const savedUser = await apiRequest({
+        url: "http://localhost:8081/client/save",
+        method: "POST",
+        data: userData,
+        actionName: "criação de conta"
+      });
+
+      dispatch({ type: "SET_USER", payload: savedUser });
+      alert("Conta criada com sucesso!");
+    } catch (err) {
+      alert(err.message);
+    }
   }
 
   const handleLogout = () => {
@@ -139,12 +150,7 @@ export default function AccountPage() {
               <div className="text-center mb-8">
                 <h1 className="text-2xl font-serif font-bold mb-2">
                   {isLogin ? "Entrar na sua conta" : "Criar nova conta"}
-                </h1>
-                <p className="text-muted-foreground">
-                  {isLogin
-                    ? "Acesse sua conta para ver pedidos e favoritos"
-                    : "Crie sua conta para uma experiência personalizada"}
-                </p>
+                </h1>                
               </div>
 
               <form onSubmit={isLogin ? handleLogin : handleRegister} className="space-y-4">
@@ -181,8 +187,8 @@ export default function AccountPage() {
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
-                      name="password"
-                      value={formData.password}
+                      name="passWord"
+                      value={formData.passWord}
                       onChange={handleInputChange}
                       required
                       className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring pr-10"
@@ -238,429 +244,4 @@ export default function AccountPage() {
     )
   }
 
-  return (
-    <div className="min-h-screen">
-      
-
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="bg-card border border-border rounded-lg p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center">
-                  <User className="h-6 w-6" />
-                </div>
-                <div>
-                  <h2 className="font-medium">{state.user.name}</h2>
-                  <p className="text-sm text-muted-foreground">{state.user.email}</p>
-                </div>
-              </div>
-
-              <nav className="space-y-2">
-                <button
-                  onClick={() => setActiveTab("profile")}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-left transition-colors ${
-                    activeTab === "profile" ? "bg-primary text-primary-foreground" : "hover:bg-accent"
-                  }`}
-                >
-                  <User className="h-4 w-4" />
-                  Meu Perfil
-                </button>
-
-                <button
-                  onClick={() => setActiveTab("orders")}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-left transition-colors ${
-                    activeTab === "orders" ? "bg-primary text-primary-foreground" : "hover:bg-accent"
-                  }`}
-                >
-                  <Package className="h-4 w-4" />
-                  Meus Pedidos
-                </button>
-
-                <button
-                  onClick={() => setActiveTab("favorites")}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-left transition-colors ${
-                    activeTab === "favorites" ? "bg-primary text-primary-foreground" : "hover:bg-accent"
-                  }`}
-                >
-                  <Heart className="h-4 w-4" />
-                  Favoritos
-                </button>
-
-                <button
-                  onClick={() => setActiveTab("settings")}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-left transition-colors ${
-                    activeTab === "settings" ? "bg-primary text-primary-foreground" : "hover:bg-accent"
-                  }`}
-                >
-                  <Settings className="h-4 w-4" />
-                  Configurações
-                </button>
-
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-left hover:bg-destructive/10 text-destructive transition-colors"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sair
-                </button>
-              </nav>
-            </div>
-          </div>
-
-          {/* Main Content */}
-          <div className="lg:col-span-3">
-            {activeTab === "profile" && (
-              <div className="bg-card border border-border rounded-lg p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-serif font-bold">Meu Perfil</h2>
-                  {!isEditing ? (
-                    <button
-                      onClick={() => setIsEditing(true)}
-                      className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-                    >
-                      Editar Informações
-                    </button>
-                  ) : (
-                    <div className="flex gap-2">
-                      <button
-                        onClick={handleCancelEdit}
-                        className="px-4 py-2 border border-border rounded-md hover:bg-accent transition-colors"
-                      >
-                        Cancelar
-                      </button>
-                      <button
-                        onClick={handleSaveProfile}
-                        className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-                      >
-                        Salvar Alterações
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                <form onSubmit={handleSaveProfile}>
-                  <div className="mb-6">
-                    <h3 className="font-medium mb-4">Informações Pessoais</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Nome completo</label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={profileData.name}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">E-mail</label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={profileData.email}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Telefone</label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={profileData.phone}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="(11) 99999-9999"
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Tipo de Cliente</label>
-                        <select
-                          name="client"
-                          value={profileData.client}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        >
-                          <option value="">Selecione</option>
-                          <option value="pessoa-fisica">Pessoa Física</option>
-                          <option value="pessoa-juridica">Pessoa Jurídica</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="font-medium mb-4">Endereço de Entrega</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">CEP</label>
-                        <input
-                          type="text"
-                          name="cep"
-                          value={profileData.cep}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="00000-000"
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Estado</label>
-                        <input
-                          type="text"
-                          name="state"
-                          value={profileData.state}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="SP"
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium mb-2">Endereço</label>
-                        <input
-                          type="text"
-                          name="address"
-                          value={profileData.address}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="Rua, Avenida, etc."
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Número</label>
-                        <input
-                          type="text"
-                          name="numberHome"
-                          value={profileData.numberHome}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="123"
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Complemento</label>
-                        <input
-                          type="text"
-                          name="complementAddress"
-                          value={profileData.complementAddress}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="Apto, Bloco, etc."
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Bairro</label>
-                        <input
-                          type="text"
-                          name="neighborhood"
-                          value={profileData.neighborhood}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="Nome do bairro"
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Cidade</label>
-                        <input
-                          type="text"
-                          name="city"
-                          value={profileData.city}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="Nome da cidade"
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            )}
-
-            {activeTab === "orders" && (
-              <div className="bg-card border border-border rounded-lg p-6">
-                <h2 className="text-2xl font-serif font-bold mb-6">Meus Pedidos</h2>
-
-                {state.orders.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-medium mb-2">Nenhum pedido ainda</h3>
-                    <p className="text-muted-foreground mb-6">Quando você fizer um pedido, ele aparecerá aqui.</p>
-                    <a
-                      href="/produtos"
-                      className="inline-block bg-primary text-primary-foreground px-6 py-2 rounded-md hover:bg-primary/90 transition-colors"
-                    >
-                      Começar a Comprar
-                    </a>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {state.orders.map((order) => (
-                      <div key={order.id} className="border border-border rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <h3 className="font-medium">Pedido #{order.id}</h3>
-                            <p className="text-sm text-muted-foreground">
-                              {new Date(order.date).toLocaleDateString("pt-BR")}
-                            </p>
-                          </div>
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}
-                          >
-                            {getStatusText(order.status)}
-                          </span>
-                        </div>
-
-                        <div className="space-y-2 mb-4">
-                          {order.items.map((item, index) => (
-                            <div key={index} className="flex justify-between text-sm">
-                              <span>
-                                {item.name} - {item.size} - {item.color} (x{item.quantity})
-                              </span>
-                              <span>R$ {(item.price * item.quantity).toFixed(2)}</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="flex justify-between items-center pt-4 border-t border-border">
-                          <span className="font-medium">Total: R$ {order.total.toFixed(2)}</span>
-                          <button className="text-sm text-primary hover:underline">Ver detalhes</button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {activeTab === "favorites" && (
-              <div className="bg-card border border-border rounded-lg p-6">
-                <h2 className="text-2xl font-serif font-bold mb-6">Meus Favoritos</h2>
-
-                {state.favorites.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-medium mb-2">Nenhum favorito ainda</h3>
-                    <p className="text-muted-foreground mb-6">
-                      Adicione produtos aos favoritos para encontrá-los facilmente.
-                    </p>
-                    <a
-                      href="/produtos"
-                      className="inline-block bg-primary text-primary-foreground px-6 py-2 rounded-md hover:bg-primary/90 transition-colors"
-                    >
-                      Explorar Produtos
-                    </a>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {state.products
-                      .filter((product) => state.favorites.includes(product.id))
-                      .map((product) => (
-                        <div key={product.id} className="border border-border rounded-lg p-4">
-                          <div className="aspect-square bg-muted rounded-md mb-3 overflow-hidden">
-                            <img
-                              src={product.images[0] || "/placeholder.svg"}
-                              alt={product.name}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <h3 className="font-medium text-sm mb-1">{product.name}</h3>
-                          <p className="text-sm font-bold">R$ {product.price.toFixed(2)}</p>
-                        </div>
-                      ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {activeTab === "settings" && (
-              <div className="bg-card border border-border rounded-lg p-6">
-                <h2 className="text-2xl font-serif font-bold mb-6">Configurações</h2>
-
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="font-medium mb-4">Notificações</h3>
-                    <div className="space-y-3">
-                      <label className="flex items-center gap-3">
-                        <input type="checkbox" className="rounded" defaultChecked />
-                        <span className="text-sm">Receber e-mails sobre novos produtos</span>
-                      </label>
-                      <label className="flex items-center gap-3">
-                        <input type="checkbox" className="rounded" defaultChecked />
-                        <span className="text-sm">Receber e-mails sobre promoções</span>
-                      </label>
-                      <label className="flex items-center gap-3">
-                        <input type="checkbox" className="rounded" />
-                        <span className="text-sm">Receber SMS sobre status do pedido</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="font-medium mb-4">Privacidade</h3>
-                    <div className="space-y-3">
-                      <label className="flex items-center gap-3">
-                        <input type="checkbox" className="rounded" defaultChecked />
-                        <span className="text-sm">Permitir cookies para melhorar a experiência</span>
-                      </label>
-                      <label className="flex items-center gap-3">
-                        <input type="checkbox" className="rounded" />
-                        <span className="text-sm">Compartilhar dados para personalização</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="font-medium mb-4">Alterar Senha</h3>
-                    <div className="space-y-4 max-w-md">
-                      <input
-                        type="password"
-                        placeholder="Senha atual"
-                        className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                      />
-                      <input
-                        type="password"
-                        placeholder="Nova senha"
-                        className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                      />
-                      <input
-                        type="password"
-                        placeholder="Confirmar nova senha"
-                        className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                      />
-                      <button className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors">
-                        Alterar Senha
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <Footer />
-    </div>
-  )
 }
