@@ -47,7 +47,7 @@ export default function AccountPage() {
     })
   }
 
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchProfileData = async () => {
       try {
         if (!state.id) return
@@ -79,7 +79,7 @@ export default function AccountPage() {
     }
 
     fetchProfileData()
-  }, [state.user])
+  }, [state.user])*/
 
 
   const handleSaveProfile = (e) => {
@@ -106,16 +106,56 @@ export default function AccountPage() {
     setIsEditing(false)
   }
 
-  const handleLogin = (e) => {
+  const handleLogin = async(e) => {
     e.preventDefault()
-    const userData = {
-      id: 1,
-      name: formData.name || "Usuário",
-      email: formData.email,
-      joinDate: new Date().toISOString(),
+    
+    const requestClient = await apiRequest({
+      url: `http://localhost:8081/client/login`, // ou a URL correta do seu login
+      method: "POST",
+      data: {
+        email: formData.email,
+        password: formData.password
+      },
+      actionName: "fazer login"
+    })
+
+    let requestClientAdress = null;
+    
+    
+    if (requestClient?.success && requestClient.data?.id) {
+      requestClientAdress = await apiRequest({
+        url: `http://localhost:8081/clientAdress/client/${requestClient.data.id}`, // ou a URL correta do seu login
+        method: "GET",
+        data: {
+          email: formData.email,
+          password: formData.password
+        },
+        actionName: "fazer login"
+      })
     }
-    dispatch({ type: "SET_USER", payload: userData })
-    alert("Login realizado com sucesso!")
+
+    if (requestClientAdress?.success && requestClientAdress.data?.length > 0) {
+        const endereco = handleclientAdress(requestClientAdress.data);
+
+        const userData = {
+          name: requestClient.data.name,
+          email: requestClient.data.email,
+          phone: requestClient.data.email,  // ajuste se tiver telefone real
+
+          cep: endereco.cep,
+          state: endereco.state,
+          adressClient: endereco.adressClient,
+          houseNumber: endereco.houseNumber,
+          complement: endereco.complement,
+          neighborhood: endereco.neighborhood,
+          city: endereco.city
+    };
+
+      dispatch({ type: "SET_USER", payload: userData })
+      //alert("Login realizado com sucesso!")*/
+    }
+
+
   }
 
   const handleRegister = async (e) => {
@@ -138,6 +178,20 @@ export default function AccountPage() {
       });
 
       dispatch({ type: "SET_USER", payload: savedUser });
+      setProfileData({
+          name: state.user.name || "",
+          email: data.email || "",
+          password: "", // nunca traga a senha!
+          address: data.address || "",
+          cep: data.cep || "",
+          numberHome: data.numberHome || "",
+          complementAddress: data.complementAddress || "",
+          neighborhood: data.neighborhood || "",
+          city: data.city || "",
+          state: data.state || "",
+          client: data.client || "",
+          phone: data.phone || ""
+        })
       alert("Conta criada com sucesso!");
     } catch (err) {
       alert(err.message);
@@ -174,6 +228,26 @@ export default function AccountPage() {
         return "Pendente"
     }
   }
+
+  const handleclientAdress = function(e) {
+    if (!e || e.length === 0) return null; // trata lista vazia ou indefinida
+
+    const firstAdress = e[0];
+
+    const datas = {
+      cep: firstAdress.cep || '',
+      state: firstAdress.state || '',
+      email: firstAdress.email || '',          // Se existir email nesse objeto
+      adressClient: firstAdress.adress || '',
+      houseNumber: firstAdress.numberHome || '',
+      complement: firstAdress.complement || '',
+      neighborhood: firstAdress.neighborhood || '',
+      city: firstAdress.city || ''
+    };
+
+    return datas; // retorna o objeto preenchido
+  };
+
 
   if (!state.user) {
     return (

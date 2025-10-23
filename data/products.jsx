@@ -43,16 +43,23 @@ export function useFetch(url) {
 // utils/apiRequest.js
 export const apiRequest = async ({ url, method = 'POST', data, actionName = 'requisição' }) => {
   try {
-    const response = await fetch(url, {
+    const fetchOptions = {
       method,
       headers: {
         "Content-Type": "application/json"
-      },
-      body: data ? JSON.stringify(data) : null
-    });
+      }
+    };
+
+    // Só adiciona body se método NÃO for GET ou HEAD
+    if (method !== 'GET' && method !== 'HEAD' && data) {
+      fetchOptions.body = JSON.stringify(data);
+    }
+
+    const response = await fetch(url, fetchOptions);
 
     if (!response.ok) {
-      const error = await response.json();
+      // Tenta ler erro da resposta
+      const error = await response.json().catch(() => ({}));
       throw new Error(`Erro ao realizar ${actionName}: ${error.message || response.statusText}`);
     }
 
@@ -63,3 +70,4 @@ export const apiRequest = async ({ url, method = 'POST', data, actionName = 'req
     throw err;
   }
 };
+
