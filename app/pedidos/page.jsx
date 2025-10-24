@@ -6,6 +6,7 @@ import Footer from "../../components/Footer"
 import { useStore } from "../../contexts/store-context"
 import { User, Package, Heart, Settings, LogOut, Eye, EyeOff } from "lucide-react"
 import { apiRequest } from "@/data/products"
+import {UserInformation} from "../conta/UserInformation"
 
 export default function AccountPage() {
   const { state, dispatch } = useStore()
@@ -20,6 +21,7 @@ export default function AccountPage() {
     confirmPassword: "",
   })
   const [profileData, setProfileData] = useState({
+    id: state.id || "",
     name: state.name || "",
     email: state.email || "",
     password: state.password || "",
@@ -40,57 +42,10 @@ export default function AccountPage() {
     })
   }
 
-  const handleProfileChange = (e) => {
-    setProfileData({
-      ...profileData,
-      [e.target.name]: e.target.value,
-    })
-  }
-
-  /*useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        if (!state.id) return
-
-        const data = await apiRequest({
-          url: `http://localhost:8081/client/${state.id}`,
-          method: "GET",
-          actionName: "buscar dados do perfil"
-        })
-
-        setProfileData({
-          name: state.user.name || "",
-          email: data.email || "",
-          password: "", // nunca traga a senha!
-          address: data.address || "",
-          cep: data.cep || "",
-          numberHome: data.numberHome || "",
-          complementAddress: data.complementAddress || "",
-          neighborhood: data.neighborhood || "",
-          city: data.city || "",
-          state: data.state || "",
-          client: data.client || "",
-          phone: data.phone || ""
-        })
-      } catch (error) {
-        console.error("Erro ao buscar perfil:", error)
-        alert("Erro ao carregar dados do perfil.")
-      }
-    }
-
-    fetchProfileData()
-  }, [state.user])*/
-
-
-  const handleSaveProfile = (e) => {
-    e.preventDefault()
-    dispatch({ type: "UPDATE_USER", payload: profileData })
-    setIsEditing(false)
-    alert("Informações atualizadas com sucesso!")
-  }
 
   const handleCancelEdit = () => {
     setProfileData({
+      id: state.id || "",
       name: state.user.name || "",
       email: state.user.email || "",
       password: state.user.password || "",
@@ -135,20 +90,21 @@ export default function AccountPage() {
     }
 
     if (requestClientAdress?.success && requestClientAdress.data?.length > 0) {
-        const endereco = handleclientAdress(requestClientAdress.data);
+        //const endereco = handleclientAdress(requestClientAdress.data);
 
         const userData = {
+          id: requestClient.data.id,
           name: requestClient.data.name,
           email: requestClient.data.email,
           phone: requestClient.data.email,  // ajuste se tiver telefone real
-
-          cep: endereco.cep,
+          adressList: requestClientAdress
+          /*cep: endereco.cep,
           state: endereco.state,
           adressClient: endereco.adressClient,
           houseNumber: endereco.houseNumber,
           complement: endereco.complement,
           neighborhood: endereco.neighborhood,
-          city: endereco.city
+          city: endereco.city*/
     };
 
       dispatch({ type: "SET_USER", payload: userData })
@@ -427,189 +383,8 @@ export default function AccountPage() {
           {/* Main Content */}
           <div className="lg:col-span-3">
             {activeTab === "profile" && (
-              <div className="bg-card border border-border rounded-lg p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-serif font-bold">Meu Perfil</h2>
-                  {!isEditing ? (
-                    <button
-                      onClick={() => setIsEditing(true)}
-                      className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-                    >
-                      Editar Informações
-                    </button>
-                  ) : (
-                    <div className="flex gap-2">
-                      <button
-                        onClick={handleCancelEdit}
-                        className="px-4 py-2 border border-border rounded-md hover:bg-accent transition-colors"
-                      >
-                        Cancelar
-                      </button>
-                      <button
-                        onClick={handleSaveProfile}
-                        className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-                      >
-                        Salvar Alterações
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                <form onSubmit={handleSaveProfile}>
-                  <div className="mb-6">
-                    <h3 className="font-medium mb-4">Informações Pessoais</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Nome completo</label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={profileData.name}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">E-mail</label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={profileData.email}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Telefone</label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={profileData.phone}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="(11) 99999-9999"
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Tipo de Cliente</label>
-                        <select
-                          name="client"
-                          value={profileData.client}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        >
-                          <option value="">Selecione</option>
-                          <option value="pessoa-fisica">Pessoa Física</option>
-                          <option value="pessoa-juridica">Pessoa Jurídica</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="font-medium mb-4">Endereço de Entrega</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">CEP</label>
-                        <input
-                          type="text"
-                          name="cep"
-                          value={profileData.cep}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="00000-000"
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Estado</label>
-                        <input
-                          type="text"
-                          name="state"
-                          value={profileData.state}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="SP"
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium mb-2">Endereço</label>
-                        <input
-                          type="text"
-                          name="address"
-                          value={profileData.address}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="Rua, Avenida, etc."
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Número</label>
-                        <input
-                          type="text"
-                          name="numberHome"
-                          value={profileData.numberHome}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="123"
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Complemento</label>
-                        <input
-                          type="text"
-                          name="complementAddress"
-                          value={profileData.complementAddress}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="Apto, Bloco, etc."
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Bairro</label>
-                        <input
-                          type="text"
-                          name="neighborhood"
-                          value={profileData.neighborhood}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="Nome do bairro"
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Cidade</label>
-                        <input
-                          type="text"
-                          name="city"
-                          value={profileData.city}
-                          onChange={handleProfileChange}
-                          disabled={!isEditing}
-                          placeholder="Nome da cidade"
-                          className="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
+             
+              <UserInformation state={state}/>
             )}
 
             {activeTab === "orders" && (

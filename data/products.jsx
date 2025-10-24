@@ -3,16 +3,18 @@
 import { useState, useEffect } from 'react';
 
 export function useFetch(url) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null); // null inicial, melhor para checagem
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const retryTimeoutRef = useRef(null); // guarda referência do timeout
+
   useEffect(() => {
-    let retryTimeout; // Sem anotação de tipo aqui
+    if (!url) return;
+
+    let isCancelled = false; // para prevenir updates após unmount
 
     const fetchData = async () => {
-      if (!url) return;
-
       setLoading(true);
 
       try {
@@ -20,25 +22,33 @@ export function useFetch(url) {
         if (!res.ok) throw new Error('Erro na requisição');
 
         const json = await res.json();
-        setData(json);
-        setError(null);
+        if (!isCancelled) {
+          setData(json);
+          setError(null);
+        }
       } catch (err) {
-        setError(err);
-        retryTimeout = setTimeout(fetchData, 3000); // Retry após 5s
+        if (!isCancelled) {
+          setError(err);
+
+          // Retry somente se componente ainda estiver montado
+          retryTimeoutRef.current = setTimeout(fetchData, 3000);
+        }
       } finally {
-        setLoading(false);
+        if (!isCancelled) setLoading(false);
       }
     };
 
     fetchData();
 
     return () => {
-      clearTimeout(retryTimeout);
+      isCancelled = true;
+      clearTimeout(retryTimeoutRef.current);
     };
   }, [url]);
 
   return { data, loading, error };
 }
+
 
 // utils/apiRequest.js
 export const apiRequest = async ({ url, method = 'POST', data, actionName = 'requisição' }) => {
