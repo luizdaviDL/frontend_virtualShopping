@@ -10,7 +10,7 @@ export default function HomePage() {
   const {data: products, loading, error} = useFetch('http://localhost:8081/product/products')
 
   const featuredProducts = useMemo(() => {
-    if (!products || !Array.isArray(products)) return [];
+    if (loading || !products || !Array.isArray(products)) return [];
 
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -21,7 +21,7 @@ export default function HomePage() {
         return createdAt >= oneWeekAgo;
       })
       .slice(0, 4);
-  }, [products]);
+  }, [products, loading]);
 
   return (
     <div className="min-h-screen">

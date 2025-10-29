@@ -22,11 +22,12 @@ export default function ProductsPage() {
   })
 
   useEffect(() => {
-    if (categories.length > 0 && filters.category === "todos") {
-      // se quiser começar na primeira categoria da API:
-      setFilters((prev) => ({ ...prev, category: categories[0].id }))
-    }
-  }, [categories])
+  if (!loadingCat && Array.isArray(categories) && categories.length > 0 && filters.category === "todos") {
+    // Se as categorias foram carregadas corretamente, e a categoria ainda for "todos"
+    setFilters((prev) => ({ ...prev, category: categories[0].id }));
+  }
+}, [categories, loadingCat, filters.category]);
+
 
   const filteredAndSortedProducts = useMemo(() => {
     if (!products || !Array.isArray(products)) return [];

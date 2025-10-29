@@ -51,17 +51,26 @@ export function ProductFilters({ onFilterChange, filters }) {
           <div>
             <h4 className="font-medium mb-3">Categorias</h4>
             <div className="space-y-2">
-              {categories.map((category) => (
-                <Button
-                  key={category.id}
-                  variant={filters.category === category.id ? "default" : "ghost"}
-                  size="sm"
-                  className="w-full justify-start"
-                  onClick={() => handleCategoryChange(category.id)}
-                >
-                  {category.name}
-                </Button>
-              ))}
+              {loadingCat ? (
+                  <p>Carregando categorias...</p>
+                ) : errorCat ? (
+                  <p>Erro ao carregar categorias: {errorCat.message}</p>
+                ) : categories && Array.isArray(categories) && categories.length > 0 ? (
+                  categories.map((category) => (
+                    <Button
+                      key={category.id}
+                      variant={filters.category === category.id ? "default" : "ghost"}
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => handleCategoryChange(category.id)}
+                    >
+                      {category.name}
+                    </Button>
+                  ))
+                ) : (
+                  <p>Sem categorias disponíveis</p>
+              )}
+
             </div>
           </div>
 

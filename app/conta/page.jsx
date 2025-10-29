@@ -71,17 +71,84 @@ export default function AccountPage() {
     setIsEditing(false)
   }
 
-  const handleLogin = (e) => {
-    e.preventDefault()
-    const userData = {
-      id: 1,
-      name: formData.name || "Usuário",
-      email: formData.email,
-      joinDate: new Date().toISOString(),
+const handleLogin = async (e) => {
+  e.preventDefault()
+  
+  if (!formData.email || !formData.passWord) {
+    alert("Por favor, preencha email e senha")
+    return
+  }
+
+  const loginData = {
+    email: formData.email,
+    password: formData.passWord
+  }
+
+  try {
+    console.log("🚀 Iniciando login...");
+    
+    const response = await apiRequest({
+      url: "http://localhost:8081/client/login",
+      method: "POST",
+      data: loginData,
+      actionName: "login"
+    })
+
+    console.log("📋 Resposta completa:", response);
+
+    // Diferentes formas de extrair os dados do usuário
+    let userData;
+
+    // Caso 1: Resposta direta (quando o cliente é a própria resposta)
+    if (response && response.id) {
+      userData = {
+        id: response.id,
+        name: response.name,
+        email: response.email,
+        token: response.token,
+        joinDate: new Date().toISOString(),
+      }
     }
+    // Caso 2: Resposta com objeto client (estrutura esperada)
+    else if (response && response.client) {
+      userData = {
+        id: response.client.id,
+        name: response.client.name,
+        email: response.client.email,
+        token: response.token,
+        joinDate: new Date().toISOString(),
+      }
+    }
+    // Caso 3: Resposta com dados em outras propriedades
+    else if (response) {
+      userData = {
+        id: response.id || response.userId || Date.now(),
+        name: response.name || response.nome || "Usuário",
+        email: response.email || response.emailAddress || formData.email,
+        token: response.token || response.accessToken,
+        joinDate: new Date().toISOString(),
+      }
+    } else {
+      throw new Error("Resposta da API vazia ou inválida")
+    }
+
+    console.log("👤 Dados do usuário preparados:", userData);
+    
     dispatch({ type: "SET_USER", payload: userData })
     alert("Login realizado com sucesso!")
+    
+    // Limpa o formulário após login bem-sucedido
+    setFormData({
+      name: "",
+      email: "",
+      passWord: "",
+      confirmPassword: "",
+    })
+  } catch (err) {
+    console.error("❌ Erro detalhado no login:", err)
+    alert(err.message || "Erro ao fazer login. Verifique suas credenciais.")
   }
+}
 
   const handleRegister = async (e) => {
     e.preventDefault()

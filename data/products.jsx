@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useRef  } from 'react';
+
 
 export function useFetch(url) {
   const [data, setData] = useState(null); // null inicial, melhor para checagem
@@ -10,6 +11,7 @@ export function useFetch(url) {
   const retryTimeoutRef = useRef(null); // guarda referência do timeout
 
   useEffect(() => {
+    console.log('useEffect disparado'); // Verifica se o useEffect foi disparado
     if (!url) return;
 
     let isCancelled = false; // para prevenir updates após unmount
@@ -19,9 +21,14 @@ export function useFetch(url) {
 
       try {
         const res = await fetch(url);
-        if (!res.ok) throw new Error('Erro na requisição');
+        console.log('Resposta da API:', res); // Verifique a resposta da API
+        if (!res.ok) {
+          const errorText = await res.text(); // Leitura de texto em vez de JSON
+          throw new Error(`Erro na requisição: ${res.status} - ${errorText}`);
+        }
 
         const json = await res.json();
+        console.log('Dados recebidos:', json); // Verifique os dados recebidos
         if (!isCancelled) {
           setData(json);
           setError(null);
@@ -29,8 +36,6 @@ export function useFetch(url) {
       } catch (err) {
         if (!isCancelled) {
           setError(err);
-
-          // Retry somente se componente ainda estiver montado
           retryTimeoutRef.current = setTimeout(fetchData, 3000);
         }
       } finally {
@@ -50,6 +55,7 @@ export function useFetch(url) {
 }
 
 
+
 // utils/apiRequest.js
 export const apiRequest = async ({ url, method = 'POST', data, actionName = 'requisição' }) => {
   try {
@@ -65,18 +71,39 @@ export const apiRequest = async ({ url, method = 'POST', data, actionName = 'req
       fetchOptions.body = JSON.stringify(data);
     }
 
+    console.log(`🔍 Fazendo requisição para: ${url}`);
+    console.log(`📤 Dados enviados:`, data);
+
     const response = await fetch(url, fetchOptions);
+
+    console.log(`📥 Status da resposta: ${response.status}`);
+    console.log(`📥 Headers:`, Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       // Tenta ler erro da resposta
-      const error = await response.json().catch(() => ({}));
-      throw new Error(`Erro ao realizar ${actionName}: ${error.message || response.statusText}`);
+      const errorText = await response.text();
+      console.error(`❌ Erro completo:`, errorText);
+      
+      let errorMessage = `Erro ao realizar ${actionName}: ${response.status} ${response.statusText}`;
+      
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorMessage = errorJson.message || errorMessage;
+      } catch {
+        // Se não for JSON, usa o texto puro
+        if (errorText) {
+          errorMessage = errorText;
+        }
+      }
+      
+      throw new Error(errorMessage);
     }
 
     const result = await response.json();
+    console.log(`✅ Resposta recebida:`, result);
     return result;
   } catch (err) {
-    console.error(`Erro em ${actionName}:`, err);
+    console.error(`💥 Erro em ${actionName}:`, err);
     throw err;
   }
 };
